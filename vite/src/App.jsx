@@ -23,7 +23,7 @@ function App() {
               <Route element={<PrivateRoute />}>
                 <Route Component={Layout} path="/">
                   <Route Component={HomePage} path="" exact />
-                  <Route Component={Profile} path="profile" />
+                  <Route path="/profile/:userId" element={<Profile />} />
                 </Route>
               </Route>
               <Route Component={LoginPage} path="/login" />

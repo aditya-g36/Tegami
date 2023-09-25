@@ -1,24 +1,25 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import React, { useState } from "react";
 
-const SearchBar = () => {
+const SearchBar = ({ handleSearch }) => {
+  const [query, setQuery] = useState("");
+
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    setQuery(inputValue);
+    handleSearch(inputValue);
+  };
+
   return (
-    <div
-      className="p-2"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: 300,
-          maxWidth: "100%",
-        }}
-      >
-        <TextField fullWidth label="Search" id="Search" />
-      </Box>
+    <div className="flex justify-center pt-2">
+      <form className="relative">
+        <input
+          type="text"
+          placeholder="Search"
+          className="py-2 pr-4 pl-4 rounded-full w-80 bg-gray-100 text-gray-800 focus:outline-none focus:ring-0 focus:border-transparent"
+          value={query}
+          onChange={handleChange}
+        />
+      </form>
     </div>
   );
 };

@@ -23,7 +23,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Posts
-        fields=["date_posted","caption","no_of_likes","user_id","images","uploaded_images"]
+        fields=["date_posted","caption","likes","user_id","images","uploaded_images"]
 
     def create(self, validated_data):
         uploaded_images = validated_data.pop("uploaded_images")
@@ -72,13 +72,12 @@ class UserFollowingSerializer(serializers.ModelSerializer):
         fields = ["id", "following_user_id", "created", "user_id"]
 
 
-
 class PostsSerializer(serializers.ModelSerializer):
     images = PostImageSerializer(many=True, read_only=True)  
 
     class Meta:
         model = Posts
-        fields = ('id','date_posted', 'caption', 'no_of_likes', 'user_id','images')
+        fields = ('id','date_posted', 'caption', 'likes', 'user_id','images')
 
 
             

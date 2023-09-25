@@ -13,7 +13,7 @@ const sidebar = () => {
   let { user, logoutUser } = useContext(AuthContext);
   const menus = [
     { name: "home", link: "/", icon: MdOutlineDashboard },
-    { name: "profile", link: "/profile", icon: AiOutlineUser },
+    { name: "profile", link: `/profile/${user.user_id}`, icon: AiOutlineUser },
     { name: "messages", link: "/", icon: FiMessageSquare },
     { name: "Setting", link: "/", icon: RiSettings4Line },
   ];

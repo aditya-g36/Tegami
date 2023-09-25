@@ -1,9 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import IconButton from "@mui/material/IconButton";
 import PostContext from "../context/PostContext";
+import AuthContext from "../context/AuthContext";
+import useAxios from "../utils/useAxios";
+import { FaRegHeart } from "react-icons/fa";
+import { FcLike } from "react-icons/fc";
+import { LuMessageSquare } from "react-icons/lu";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -14,6 +19,43 @@ import { Navigation } from "swiper/modules";
 const PostCard = (props) => {
   const [open, setOpen] = useState(true);
   let { User } = useContext(PostContext);
+  const { user } = useContext(AuthContext);
+  let api = useAxios();
+
+  let [like, setLike] = useState(() =>
+    props.data ? props.data.likes.includes(user?.user_id) : false
+  );
+
+  const tempLikes = useRef(props.data?.likes);
+
+  let updateLikes = async () => {
+    let formData = new FormData();
+
+    for (let index = 0; index < tempLikes.current.length; index++) {
+      const element = tempLikes.current[index];
+      formData.append("likes", element);
+    }
+    let response = await api.patch(`/api/likes/${props.data?.id}/`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  };
+  let handleClick = () => {
+    if (like) {
+      let arr = [];
+      for (let i = 0; i < tempLikes.current.length; i++) {
+        if (tempLikes.current[i] !== user?.user_id) {
+          arr.push(tempLikes.current[i]);
+        }
+      }
+      tempLikes.current = arr;
+      setLike(false);
+      updateLikes();
+    } else {
+      tempLikes.current = [...tempLikes.current, user?.user_id];
+      setLike(true);
+      updateLikes();
+    }
+  };
 
   return (
     <div className="mx-auto max-w-md flex flex-col justify-center my-12 border rounded-md">
@@ -28,50 +70,58 @@ const PostCard = (props) => {
             <div className="text-gray-600">Aug 18</div>
           </div>
         </div>
-
-        <Swiper
-          navigation={true}
-          modules={[Navigation]}
-          className="mySwiper"
-          style={{
-            "--swiper-navigation-color": "#FFF",
-            "--swiper-navigation-size": "25px",
-            backgroundColor: "black",
-          }}
-        >
-          {props.data.images.map((itr) => (
-            <SwiperSlide key={itr.id}>
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "black",
-                }}
-              >
-                <img
-                  src={"http://127.0.0.1:8000" + itr.image}
+        <div style={{ width: "400px", height: "300px" }}>
+          <Swiper
+            navigation={true}
+            modules={[Navigation]}
+            className="mySwiper"
+            style={{
+              "--swiper-navigation-color": "#FFF",
+              "--swiper-navigation-size": "25px",
+              backgroundColor: "black",
+            }}
+          >
+            {props.data.images.map((itr) => (
+              <SwiperSlide key={itr.id}>
+                <div
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "contain",
-                    userSelect: "none",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "black",
                   }}
-                />
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+                >
+                  <img
+                    src={"http://127.0.0.1:8000" + itr.image}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      userSelect: "none",
+                    }}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
         <div>
           <div className="flex items-center justify-between text-gray-700 px-1">
             <div className="flex ">
-              <IconButton>
-                <FavoriteBorderIcon />
-              </IconButton>
               <IconButton variant="plain" color="neutral" size="sm">
-                <ChatBubbleOutlineRoundedIcon />
+                <div onClick={handleClick}>
+                  {like ? (
+                    <FavoriteIcon style={{ color: "red" }} />
+                  ) : (
+                    <FavoriteBorderIcon />
+                  )}
+                </div>
+              </IconButton>
+
+              <IconButton variant="plain" color="neutral" size="sm">
+                <LuMessageSquare />
               </IconButton>
             </div>
             <IconButton variant="plain" color="neutral" size="sm">

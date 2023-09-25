@@ -8,7 +8,7 @@ from django.conf import settings
 class Posts(models.Model):
     date_posted=models.DateTimeField(auto_now=True)
     caption = models.CharField(max_length=2000)
-    no_of_likes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts')
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 class PostImage(models.Model):
@@ -37,9 +37,6 @@ class UserFollowing(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user_id','following_user_id'],  name="unique_followers")
-        ]
 
         ordering = ["-created"]
 

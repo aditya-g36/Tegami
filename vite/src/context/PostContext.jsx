@@ -36,10 +36,17 @@ export const PostProvider = ({ children }) => {
   };
 
   let getUser = async () => {
-    let response = await api.get("/api/profile/");
+    let formdata = new FormData();
+    formdata.set("user_id", user.user_id);
+
+    const response = await api.post("/api/profile/", formdata, {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    });
 
     if (response.status === 200) {
-      response.data.map((itr) => itr.id == user.user_id && setUser(itr));
+      setUser(response.data[0]);
     }
   };
 
