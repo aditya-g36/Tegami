@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
@@ -20,6 +20,7 @@ const PostCard = (props) => {
   const [open, setOpen] = useState(true);
   let { User } = useContext(PostContext);
   const { user } = useContext(AuthContext);
+  const [numoflikes, setnumoflikes] = useState(1);
   let api = useAxios();
 
   let [like, setLike] = useState(() =>
@@ -27,7 +28,9 @@ const PostCard = (props) => {
   );
 
   const tempLikes = useRef(props.data?.likes);
-
+  useEffect(() => {
+    setnumoflikes(tempLikes.current.length);
+  }, [tempLikes.current]);
   let updateLikes = async () => {
     let formData = new FormData();
 
@@ -35,9 +38,13 @@ const PostCard = (props) => {
       const element = tempLikes.current[index];
       formData.append("likes", element);
     }
-    let response = await api.patch(`/api/likes/${props.data?.id}/`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      await api.patch(`/api/likes/${props.data?.id}/`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } catch (error) {
+      console.error("Error updating likes:", error);
+    }
   };
   let handleClick = () => {
     if (like) {
@@ -47,11 +54,13 @@ const PostCard = (props) => {
           arr.push(tempLikes.current[i]);
         }
       }
+
       tempLikes.current = arr;
       setLike(false);
       updateLikes();
     } else {
-      tempLikes.current = [...tempLikes.current, user?.user_id];
+      const updatedLikes = [...tempLikes.current, user?.user_id];
+      tempLikes.current = updatedLikes;
       setLike(true);
       updateLikes();
     }
@@ -110,14 +119,17 @@ const PostCard = (props) => {
         <div>
           <div className="flex items-center justify-between text-gray-700 px-1">
             <div className="flex ">
-              <IconButton variant="plain" color="neutral" size="sm">
-                <div onClick={handleClick}>
-                  {like ? (
-                    <FavoriteIcon style={{ color: "red" }} />
-                  ) : (
-                    <FavoriteBorderIcon />
-                  )}
-                </div>
+              <IconButton
+                variant="plain"
+                color="neutral"
+                size="sm"
+                onClick={handleClick}
+              >
+                {like ? (
+                  <FavoriteIcon style={{ color: "red" }} />
+                ) : (
+                  <FavoriteBorderIcon />
+                )}
               </IconButton>
 
               <IconButton variant="plain" color="neutral" size="sm">
@@ -127,6 +139,16 @@ const PostCard = (props) => {
             <IconButton variant="plain" color="neutral" size="sm">
               <BookmarkBorderRoundedIcon />
             </IconButton>
+          </div>
+          <div
+            className="text-gray-700 "
+            style={{
+              fontSize: "smaller",
+              marginTop: "-10px",
+              paddingLeft: "20px",
+            }}
+          >
+            {numoflikes}
           </div>
 
           <div className="flex space-x-2 px-2">

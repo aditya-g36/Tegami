@@ -23,7 +23,8 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Posts
-        fields=["date_posted","caption","likes","user_id","images","uploaded_images"]
+        fields=["date_posted","caption","user_id","images","likes","uploaded_images"]
+        read_only_fields = ["likes"]
 
     def create(self, validated_data):
         uploaded_images = validated_data.pop("uploaded_images")

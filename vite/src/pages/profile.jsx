@@ -176,7 +176,7 @@ const profile = () => {
               <br />
               <p>{User.bio}</p>
             </div>
-            <MDBCardBody className="text-black p-4">
+            <MDBCardBody className="text-black p-4" style={{ width: "500px" }}>
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <MDBCardText className="lead fw-normal mb-0">
                   Recent photos
@@ -188,11 +188,7 @@ const profile = () => {
                 </MDBCardText>
               </div>
 
-              {Posts.map((post) => (
-                <li key={post.id} style={{ listStyle: "none" }}>
-                  <ProfileImageList data={post} />
-                </li>
-              ))}
+              <ProfileImageList data={Posts} />
             </MDBCardBody>
           </MDBCard>
         </MDBCol>

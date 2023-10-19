@@ -7,7 +7,7 @@ from django.conf import settings
 
 class Posts(models.Model):
     date_posted=models.DateTimeField(auto_now=True)
-    caption = models.CharField(max_length=2000)
+    caption = models.CharField(max_length=2000,blank=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts')
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
