@@ -46,13 +46,13 @@ def getRoutes(request):
 class FeedView(APIView):
     
     def get(self, request):
-        posts = Posts.objects.all()  
+        posts = Posts.objects.all().order_by('-date_posted')
         serializer = PostsSerializer(posts, many=True)  
         return Response(serializer.data)
 
     def post(self, request):
         user_id = request.data.get('user_id')  
-        user_posts = Posts.objects.filter(user_id=user_id)
+        user_posts = Posts.objects.filter(user_id=user_id).order_by('-date_posted')
         serializer = PostsSerializer(user_posts, many=True)
         return Response(serializer.data)
    

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
-import ProfileImageList from "../components/ProfileImageList";
+import PostCard from "../components/PostCard";
 import PostContext from "../context/PostContext";
 import useAxios from "../utils/useAxios";
 import { useParams } from "react-router-dom";
@@ -22,6 +22,7 @@ const profile = () => {
   let [User, setUser] = useState([]);
   let { UserFollowing } = useContext(PostContext);
   const { userId } = useParams();
+
   let api = useAxios();
 
   useEffect(() => {
@@ -57,6 +58,8 @@ const profile = () => {
       setPosts(response.data);
     }
   };
+  let imageUrl = "http://127.0.0.1:8000" + User.header_photo;
+  console.log(imageUrl);
   let following = 0;
   let followers = 0;
 
@@ -107,13 +110,17 @@ const profile = () => {
     setIsFollowing(!isFollowing);
   };
   return (
-    <div className="border-x-2">
+    <div className="border-x-[0.5px] border-slate-700 ">
       <MDBRow className="justify-content-center align-items-center h-100">
         <MDBCol>
-          <MDBCard>
+          <MDBCard style={{ backgroundColor: "#000" }}>
             <div
               className=" text-white d-flex flex-row"
-              style={{ backgroundColor: "#000", height: "200px" }}
+              style={{
+                backgroundImage: `url(${imageUrl})`,
+                backgroundSize: "cover",
+                height: "200px",
+              }}
             >
               <div
                 className="ms-4 mt-5 d-flex flex-column"
@@ -139,26 +146,30 @@ const profile = () => {
                 <MDBCardText>New York</MDBCardText>
               </div>
             </div>
-            <div
-              className="p-4 text-black"
-              style={{ backgroundColor: "#f8f9fa" }}
-            >
-              <div className="d-flex justify-content-end text-center py-1">
+            <div className="p-4 text-black" style={{ backgroundColor: "#000" }}>
+              <div
+                className="d-flex justify-content-end text-center py-1"
+                style={{ backgroundColor: "#000" }}
+              >
                 <div>
-                  <MDBCardText className="mb-1 h5">253</MDBCardText>
-                  <MDBCardText className="small text-muted mb-0">
+                  <MDBCardText className="mb-1 h5 text-white">253</MDBCardText>
+                  <MDBCardText className="small text-muted mb-0 text-white">
                     Photos
                   </MDBCardText>
                 </div>
                 <div className="px-3">
-                  <MDBCardText className="mb-1 h5">{followers}</MDBCardText>
-                  <MDBCardText className="small text-muted mb-0">
+                  <MDBCardText className="mb-1 h5 text-white">
+                    {followers}
+                  </MDBCardText>
+                  <MDBCardText className="small text-muted mb-0 text-white">
                     Followers
                   </MDBCardText>
                 </div>
                 <div>
-                  <MDBCardText className="mb-1 h5">{following}</MDBCardText>
-                  <MDBCardText className="small text-muted mb-0">
+                  <MDBCardText className="mb-1 h5 text-white">
+                    {following}
+                  </MDBCardText>
+                  <MDBCardText className="small text-muted mb-0 text-white">
                     Following
                   </MDBCardText>
                 </div>
@@ -176,19 +187,29 @@ const profile = () => {
               <br />
               <p>{User.bio}</p>
             </div>
-            <MDBCardBody className="text-black p-4" style={{ width: "500px" }}>
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <MDBCardText className="lead fw-normal mb-0">
-                  Recent photos
-                </MDBCardText>
-                <MDBCardText className="mb-0">
-                  <a href="#!" className="text-muted">
-                    Show all
-                  </a>
-                </MDBCardText>
+            <MDBCardBody
+              className="text-black"
+              style={{ margin: 0, padding: 0 }}
+            >
+              <div className="d-flex justify-content-center align-items-center   align-items-center mb-4">
+                <MDBCardText className="lead fw-normal mb-0">Posts</MDBCardText>
               </div>
-
-              <ProfileImageList data={Posts} />
+              {Posts.map((post) => (
+                <li
+                  key={post.id}
+                  style={{ listStyle: "none" }}
+                  className="bg-[#000000] border-[0.5px] border-slate-700"
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                    }}
+                    className="bg-[#000000]"
+                  >
+                    <PostCard data={post} />
+                  </div>
+                </li>
+              ))}
             </MDBCardBody>
           </MDBCard>
         </MDBCol>

@@ -37,10 +37,10 @@ const UserList = ({ users }) => {
                 </div>
               </div>
               <div>
-                <div className="font-bold text-lg">
+                <div className="font-bold text-lg text-white">
                   {user.first_name} {user.last_name}
                 </div>
-                <div className="text-base">@{user.username}</div>
+                <div className="text-base text-slate-400	">@{user.username}</div>
               </div>
             </li>
           ))}

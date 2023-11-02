@@ -15,7 +15,7 @@ import Layout from "./utils/layout";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App bg-[#0e0e0e]">
       <Router>
         <AuthProvider>
           <PostProvider>

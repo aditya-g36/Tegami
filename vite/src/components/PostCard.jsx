@@ -1,23 +1,20 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import IconButton from "@mui/material/IconButton";
 import PostContext from "../context/PostContext";
 import AuthContext from "../context/AuthContext";
 import useAxios from "../utils/useAxios";
-import { FaRegHeart } from "react-icons/fa";
-import { FcLike } from "react-icons/fc";
-import { LuMessageSquare } from "react-icons/lu";
+import { TbBookmark } from "react-icons/tb";
+import { HiOutlineArrowUpTray } from "react-icons/hi2";
+import { TbMessageCircle } from "react-icons/tb";
 
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "../App.css";
-import { Navigation } from "swiper/modules";
 
 const PostCard = (props) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   let { User } = useContext(PostContext);
   const { user } = useContext(AuthContext);
   const [numoflikes, setnumoflikes] = useState(1);
@@ -67,97 +64,193 @@ const PostCard = (props) => {
   };
 
   return (
-    <div className="mx-auto max-w-md flex flex-col justify-center my-12 border rounded-md">
-      <div className="grid grid-cols-1">
-        <div className="flex items-center h-14 p-2 flex space-x-3">
+    <div className="w-full mx-auto flex flex-col bg-[#000000]">
+      <div className="grid grid-cols-1 bg-[#000000]">
+        <div className="flex items-start p-2 flex space-x-3 bg-[#000000]">
           <img
-            className="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+            className="items-start inline-block h-10 w-10 rounded-full ring-2 ring-black"
             src={"http://127.0.0.1:8000/" + User.profileimg}
           />
-          <div className="text-sm font-medium">
-            <div className="text-gray-900 leading-none">{User.username}</div>
-            <div className="text-gray-600">Aug 18</div>
+          <div>
+            <div className="flex flex-row text-sm font-medium">
+              <div className="leading-none text-slate-50	">
+                {User.first_name} {User.last_name}
+              </div>
+              <div className="leading-none text-slate-400">
+                {"@" + User.username}
+              </div>
+            </div>
+            <div className="flex space-x-2 ">
+              <div
+                className={`flex text-slate-50 text-base ${
+                  open
+                    ? "line-clamp-1 whitespace-normal"
+                    : "truncate whitespace-normal"
+                }`}
+                style={{
+                  wordWrap: "break-word",
+                }}
+              >
+                <span>
+                  {open
+                    ? props.data.caption
+                    : props.data.caption.substring(0, 50) + "..." + " "}
+                  {props.data.caption.length > 50 && (
+                    <button
+                      className="text-slate-400"
+                      onClick={() => setOpen(!open)}
+                    >
+                      {open ? "less" : "more"}
+                    </button>
+                  )}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-        <div style={{ width: "400px", height: "300px" }}>
-          <Swiper
-            navigation={true}
-            modules={[Navigation]}
-            className="mySwiper"
-            style={{
-              "--swiper-navigation-color": "#FFF",
-              "--swiper-navigation-size": "25px",
-              backgroundColor: "black",
-            }}
-          >
-            {props.data.images.map((itr) => (
-              <SwiperSlide key={itr.id}>
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "black",
-                  }}
-                >
-                  <img
-                    src={"http://127.0.0.1:8000" + itr.image}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                      userSelect: "none",
-                    }}
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        {/*
+        <div
+          className="mx-auto"
+          style={{
+            width: "400px",
+            height: "300px",
+            border: "1px solid #333",
+            borderRadius: "10px",
+          }}
+        >
+          
         </div>
-        <div>
-          <div className="flex items-center justify-between text-gray-700 px-1">
-            <div className="flex ">
-              <IconButton
-                variant="plain"
-                color="neutral"
-                size="sm"
-                onClick={handleClick}
-              >
-                {like ? (
-                  <FavoriteIcon style={{ color: "red" }} />
-                ) : (
-                  <FavoriteBorderIcon />
-                )}
-              </IconButton>
+        */}
+        {props.data.images.length == 1 && (
+          <div className="mr-2 ml-16">
+            <img
+              src={"http://127.0.0.1:8000" + props.data.images[0].image}
+              alt=""
+              className="rounded-2xl max-h-[500px]	object-cover"
+            />
+          </div>
+        )}
 
-              <IconButton variant="plain" color="neutral" size="sm">
-                <LuMessageSquare />
-              </IconButton>
+        {props.data.images.length == 2 && (
+          <div className="mr-2 ml-16">
+            <div className="flex flex-row space-x-0.5 ">
+              <div style={{ flex: 1 }}>
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[0].image}
+                  alt=""
+                  className="rounded-l-lg object-cover min-h-[300px]"
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[1].image}
+                  alt=""
+                  className="rounded-r-lg min-h-[300px] object-cover"
+                />
+              </div>
             </div>
+          </div>
+        )}
+
+        {props.data.images.length == 3 && (
+          <div className="mr-2 ml-16 flex flex-row space-x-0.5">
+            <div className="flex w-1/2">
+              <img
+                src={"http://127.0.0.1:8000" + props.data.images[0].image}
+                alt=""
+                className="rounded-l-lg object-cover w-full h-[258px]"
+              />
+            </div>
+
+            <div className="flex flex-col w-1/2 space-y-0.5">
+              <div className="flex w-full">
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[1].image}
+                  alt=""
+                  className="rounded-tr-lg object-cover w-full h-32"
+                />
+              </div>
+              <div className="flex w-full">
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[2].image}
+                  alt=""
+                  className="rounded-br-lg object-cover w-full h-32"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {props.data.images.length == 4 && (
+          <div className="mr-2 ml-16 flex flex-col space-y-0.5">
+            <div className="flex flex-row space-x-0.5">
+              <div className="w-1/2">
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[0].image}
+                  alt=""
+                  className="rounded-tl-lg max-h-[125px] object-cover w-full"
+                />
+              </div>
+              <div className="w-1/2 rounded">
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[1].image}
+                  alt=""
+                  className="rounded-tr-lg max-h-[125px] object-cover w-full"
+                />
+              </div>
+            </div>
+            <div className="flex flex-row rounded-t-lg space-x-0.5">
+              <div className="w-1/2 ">
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[2].image}
+                  alt=""
+                  className="rounded-bl-lg max-h-[125px] object-cover w-full"
+                />
+              </div>
+              <div className="w-1/2 ">
+                <img
+                  src={"http://127.0.0.1:8000" + props.data.images[3].image}
+                  alt=""
+                  className="rounded-br-lg max-h-[125px] object-cover w-full"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="mr-2 ml-16">
+          <div className="flex items-center justify-between text-slate-50">
+            <IconButton
+              variant="plain"
+              color="neutral"
+              size="sm"
+              onClick={handleClick}
+            >
+              {like ? (
+                <FavoriteIcon style={{ color: "red" }} />
+              ) : (
+                <FavoriteBorderIcon className="text-slate-400 group hover:text-blue-500" />
+              )}
+            </IconButton>
+
             <IconButton variant="plain" color="neutral" size="sm">
-              <BookmarkBorderRoundedIcon />
+              <TbMessageCircle className="text-slate-400 group hover:text-blue-500" />
+            </IconButton>
+            <IconButton variant="plain" color="neutral" size="sm">
+              <HiOutlineArrowUpTray className="text-slate-400 group hover:text-blue-500" />
+            </IconButton>
+            <IconButton variant="plain" color="neutral" size="sm">
+              <TbBookmark className="text-slate-400 group hover:text-blue-500" />
             </IconButton>
           </div>
           <div
-            className="text-gray-700 "
+            className="text-slate-50 pl-3"
             style={{
               fontSize: "smaller",
               marginTop: "-10px",
-              paddingLeft: "20px",
             }}
           >
             {numoflikes}
-          </div>
-
-          <div className="flex space-x-2 px-2">
-            <div
-              className={`text-gray-700 text-base ${open ? "truncate " : ""}`}
-            >
-              {props.data.caption}
-            </div>
-            {open && <button onClick={() => setOpen(!open)}>more</button>}
           </div>
         </div>
       </div>

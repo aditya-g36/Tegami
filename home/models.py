@@ -7,7 +7,7 @@ from django.conf import settings
 
 class Posts(models.Model):
     date_posted=models.DateTimeField(auto_now=True)
-    caption = models.CharField(max_length=2000,blank=True)
+    caption = models.CharField(max_length=1000,blank=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts')
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
@@ -22,7 +22,9 @@ class User(AbstractUser):
     email = models.EmailField(blank=False)
     bio = models.TextField(blank=True)
     profileimg = models.ImageField(upload_to='images', default='../media/images/default_profile.png')
+    header_photo = models.ImageField(upload_to='images', default='../media/images/header_default_photo.png')
     location = models.CharField(max_length=100, blank=True)
+
 
     def str(self):
         return self.username
